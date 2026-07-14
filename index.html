@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspiración Diaria - Tu Agenda Personalizada</title>
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --gold: #d4af37;
+            --gold-hover: #f3e5ab;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Fondo decorativo sutil */
+        .background-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 10%;
+            left: 10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .background-glow-2 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(30, 144, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
+            bottom: 10%;
+            right: 10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Selector de Categorías */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .category-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .category-btn.active {
+            background: var(--gold);
+            color: #0f172a;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Tarjeta de la Frase */
+        .quote-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .quote-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .quote-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            opacity: 0.2;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .quote-text {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 20px;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .quote-author {
+            font-size: 0.95rem;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: opacity 0.4s ease;
+        }
+
+        .quote-category-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 15px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* Animaciones para la transición */
+        .fade-out {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        /* Botón Principal */
+        .action-btn {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 14px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .action-btn:hover {
+            background: var(--gold);
+            color: #0f172a;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            transform: scale(1.05);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-glow"></div>
+    <div class="background-glow-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Inspiración Diaria</h1>
+            <p>Pensamientos para liderar y crecer</p>
+        </header>
+
+        <!-- Selector de Categorías -->
+        <div class="categories">
+            <button class="category-btn active" onclick="setCategory('all')">Todas</button>
+            <button class="category-btn" onclick="setCategory('liderazgo')">Liderazgo</button>
+            <button class="category-btn" onclick="setCategory('exito')">Éxito y Visión</button>
+            <button class="category-btn" onclick="setCategory('enfoque')">Productividad</button>
+        </div>
+
+        <!-- Tarjeta de Frase -->
+        <div class="quote-card">
+            <div class="quote-icon">“</div>
+            <p class="quote-text" id="quoteText">Cargando inspiración...</p>
+            <p class="quote-author" id="quoteAuthor">- Autor</p>
+            <span class="quote-category-tag" id="quoteCategory">Categoría</span>
+        </div>
+
+        <!-- Botón de acción -->
+        <button class="action-btn" onclick="getNewQuote()">Nueva Frase</button>
+
+        <footer>
+            Hecho con aprecio • Agenda 2026
+        </footer>
+    </div>
+
+    <script>
+        // Array masivo de 100 frases motivacionales de nivel profesional
+        const quotes = [
+            // --- LIDERAZGO ---
+            { text: "El liderazgo no se trata de estar al mando, sino de cuidar de las personas a tu cargo.", author: "Simon Sinek", cat: "liderazgo" },
+            { text: "Un líder es un negociador de esperanzas.", author: "Napoleón Bonaparte", cat: "liderazgo" },
+            { text: "La gestión es hacer las cosas bien; el liderazgo es hacer las cosas correctas.", author: "Peter Drucker", cat: "liderazgo" },
+            { text: "El ejemplo no es la principal manera de influir en los demás; es la única.", author: "Albert Schweitzer", cat: "liderazgo" },
+            { text: "Para liderar a la gente, camina tras ellos.", author: "Lao Tsé", cat: "liderazgo" },
+            { text: "Antes de ser líder, el éxito se trata de crecer tú mismo. Cuando te vuelves líder, el éxito se trata de hacer crecer a otros.", author: "Jack Welch", cat: "liderazgo" },
+            { text: "El liderazgo es la capacidad de traducir la visión en realidad.", author: "Warren Bennis", cat: "liderazgo" },
+            { text: "No encuentres fallas, encuentra un remedio.", author: "Henry Ford", cat: "liderazgo" },
+            { text: "Los líderes sobresalientes se esfuerzan por aumentar la autoestima de su personal.", author: "Sam Walton", cat: "liderazgo" },
+            { text: "La primera responsabilidad de un líder es definir la realidad. La última es dar las gracias.", author: "Max De Pree", cat: "liderazgo" },
+            { text: "Cualquiera puede sostener el timón cuando el mar está en calma.", author: "Publilio Siro", cat: "liderazgo" },
+            { text: "La función del liderazgo es producir más líderes, no más seguidores.", author: "Ralph Nader", cat: "liderazgo" },
+            { text: "La grandeza de un líder se mide por lo que exige de sí mismo, no de los demás.", author: "Anónimo", cat: "liderazgo" },
+            { text: "El arte de la comunicación es el lenguaje del liderazgo.", author: "James Humes", cat: "liderazgo" },
+            { text: "Un gran líder no nos dice qué hacer; nos muestra lo que es posible.", author: "Anónimo", cat: "liderazgo" },
+            { text: "El verdadero liderazgo consiste en guiar a otros hacia el éxito, asegurando que todos brillen.", author: "Anónimo", cat: "liderazgo" },
+            { text: "Para liderar el mañana, debemos aprender hoy.", author: "John F. Kennedy", cat: "liderazgo" },
+            { text: "El coraje de un gran líder no viene de tener la razón, sino de no tener miedo a equivocarse.", author: "Anónimo", cat: "liderazgo" },
+            { text: "La clave del liderazgo exitoso es la influencia, no la autoridad.", author: "Kenneth H. Blanchard", cat: "liderazgo" },
+            { text: "Un buen líder lleva a la gente a donde quiere ir. Un gran líder los lleva a donde no necesariamente quieren ir, pero deben estar.", author: "Rosalynn Carter", cat: "liderazgo" },
+            { text: "En el siglo XXI, los líderes serán aquellos que empoderen a los demás.", author: "Bill Gates", cat: "liderazgo" },
+            { text: "El liderazgo consiste en inspirar a las personas a hacer cosas que nunca pensaron que podrían hacer.", author: "Steve Jobs", cat: "liderazgo" },
+            { text: "Si tus acciones inspiran a otros a soñar más, aprender más, hacer más y convertirse en más, eres un líder.", author: "John Quincy Adams", cat: "liderazgo" },
+            { text: "Un líder es alguien que conoce el camino, recorre el camino y muestra el camino.", author: "John C. Maxwell", cat: "liderazgo" },
+            { text: "La innovación distingue a un líder de un seguidor.", author: "Steve Jobs", cat: "liderazgo" },
+
+            // --- ÉXITO Y VISIÓN ---
+            { text: "La mejor manera de predecir el futuro es creándolo.", author: "Peter Drucker", cat: "exito" },
+            { text: "El éxito no es el final, el fracaso no es la ruina: lo que cuenta es el valor para continuar.", author: "Winston Churchill", cat: "exito" },
+            { text: "No midas tu riqueza por el dinero que tienes, mídela por aquellas cosas que tienes que no cambiarías por dinero.", author: "Anónimo", cat: "exito" },
+            { text: "Los obstáculos son esas cosas espantosas que ves cuando apartas los ojos de tu meta.", author: "Henry Ford", cat: "exito" },
+            { text: "El único lugar donde el éxito viene antes que el trabajo es en el diccionario.", author: "Vidal Sassoon", cat: "exito" },
+            { text: "No busques el éxito rápido; busca construir algo que trascienda.", author: "Anónimo", cat: "exito" },
+            { text: "No he fracasado. He encontrado 10,000 formas que no funcionan.", author: "Thomas A. Edison", cat: "exito" },
+            { text: "Las grandes mentes discuten ideas; las mentes promedio discuten eventos; las mentes pequeñas discuten personas.", author: "Eleanor Roosevelt", cat: "exito" },
+            { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier", cat: "exito" },
+            { text: "La visión sin acción es solo un sueño. Acción sin visión es pasar el tiempo. Visión con acción puede cambiar el mundo.", author: "Joel Barker", cat: "exito" },
+            { text: "Apunta a la luna. Si fallas, podrías dar a una estrella.", author: "W. Clement Stone", cat: "exito" },
+            { text: "La diferencia entre una persona exitosa y otros no es la falta de fuerza, ni la falta de conocimiento, sino la falta de voluntad.", author: "Vince Lombardi", cat: "exito" },
+            { text: "Solo aquellos que se atreven a sufrir un gran fracaso pueden lograr un gran éxito.", author: "Robert F. Kennedy", cat: "exito" },
+            { text: "No dejes que el ruido de las opiniones de los demás ahogue tu propia voz interior.", author: "Steve Jobs", cat: "exito" },
+            { text: "La vida es un 10% lo que te pasa y un 90% cómo reaccionas a ello.", author: "Charles R. Swindoll", cat: "exito" },
+            { text: "Define el éxito bajo tus propios términos, consíguelo bajo tus propias reglas y construye una vida de la que estés orgulloso.", author: "Anne Sweeney", cat: "exito" },
+            { text: "El éxito suele llegar a quienes están demasiado ocupados para buscarlo.", author: "Henry David Thoreau", cat: "exito" },
+            { text: "No se trata de cuántas veces caes, sino de cuántas veces te levantas.", author: "Nelson Mandela", cat: "exito" },
+            { text: "La gente rara vez tiene éxito a menos que se divierta en lo que hace.", author: "Dale Carnegie", cat: "exito" },
+            { text: "Los retos hacen que la vida sea interesante y superarlos es lo que hace que la vida tenga sentido.", author: "Ralph Waldo Emerson", cat: "exito" },
+            { text: "No mires el reloj; haz lo que él hace. Sigue adelante.", author: "Sam Levenson", cat: "exito" },
+            { text: "Todo lo que siempre has querido está al otro lado del miedo.", author: "George Addair", cat: "exito" },
+            { text: "El éxito no se logra solo con cualidades especiales. Es sobre todo un trabajo de constancia, de método y de organización.", author: "Víctor Hugo", cat: "exito" },
+            { text: "La oportunidad no llama a la puerta, se presenta cuando derribas la puerta.", author: "Kyle Chandler", cat: "exito" },
+            { text: "La excelencia no es un acto, sino un hábito.", author: "Aristóteles", cat: "exito" },
+
+            // --- ENFOQUE Y PRODUCTIVIDAD ---
+            { text: "La simplicidad es la máxima sofisticación.", author: "Leonardo da Vinci", cat: "enfoque" },
+            { text: "No te dejes distraer por el ruido; mantén el enfoque en tu propósito principal.", author: "Anónimo", cat: "enfoque" },
+            { text: "El tiempo que disfrutas perdiendo no es tiempo perdido.", author: "Marthe Troly-Curtin", cat: "enfoque" },
+            { text: "La productividad nunca es un accidente. Siempre es el resultado de un compromiso con la excelencia, la planificación inteligente y el esfuerzo enfocado.", author: "Paul J. Meyer", cat: "enfoque" },
+            { text: "Lo que se mide, se gestiona.", author: "Peter Drucker", cat: "enfoque" },
+            { text: "No es que tengamos poco tiempo, sino que perdemos mucho.", author: "Séneca", cat: "enfoque" },
+            { text: "Enfócate en ser productivo, no en estar ocupado.", author: "Tim Ferriss", cat: "enfoque" },
+            { text: "Hacer dos cosas a la vez es no hacer ninguna de las dos.", author: "Publilio Siro", cat: "enfoque" },
+            { text: "La clave no es priorizar lo que está en tu agenda, sino agendar tus prioridades.", author: "Stephen Covey", cat: "enfoque" },
+            { text: "La disciplina es el puente entre las metas y los logros.", author: "Jim Rohn", cat: "enfoque" },
+            { text: "Comienza donde estás. Usa lo que tienes. Haz lo que puedes.", author: "Arthur Ashe", cat: "enfoque" },
+            { text: "Haz de cada día tu obra maestra.", author: "John Wooden", cat: "enfoque" },
+            { text: "No cuentes los días, haz que los días cuenten.", author: "Muhammad Ali", cat: "enfoque" },
+            { text: "La concentración es el secreto de la fuerza.", author: "Ralph Waldo Emerson", cat: "enfoque" },
+            { text: "Tu futuro depende de lo que hagas hoy, no mañana.", author: "Mahatma Gandhi", cat: "enfoque" },
+            { text: "Es más fácil excluir los ruidos molestos cuando estás enfocado en una melodía hermosa.", author: "Anónimo", cat: "enfoque" },
+            { text: "El trabajo duro supera al talento cuando el talento no trabaja duro.", author: "Tim Notke", cat: "enfoque" },
+            { text: "La mejor preparación para el mañana es hacer lo mejor que puedas hoy.", author: "H. Jackson Brown Jr.", cat: "enfoque" },
+            { text: "La falta de tiempo es en realidad una falta de prioridades.", author: "Tim Ferriss", cat: "enfoque" },
+            { text: "Un año a partir de ahora desearás haber comenzado hoy.", author: "Karen Lamb", cat: "enfoque" },
+            { text: "No encuentres tiempo para hacer las cosas; crea el tiempo.", author: "Anónimo", cat: "enfoque" },
+            { text: "La eficiencia es hacer las cosas bien. La efectividad es hacer las cosas correctas.", author: "Peter Drucker", cat: "enfoque" },
+            { text: "Los aficionados esperan la inspiración; los profesionales se levantan y van a trabajar.", author: "Stephen King", cat: "enfoque" },
+            { text: "Solo haz una cosa a la vez, pero hazla con toda tu alma.", author: "Anónimo", cat: "enfoque" },
+            { text: "La constancia es el motor invisible del éxito.", author: "Anónimo", cat: "enfoque" },
+
+            // --- ACTITUD Y BIENESTAR (Y más frases para llegar a 100) ---
+            { text: "El optimismo es la fe que conduce al logro.", author: "Helen Keller", cat: "liderazgo" },
+            { text: "El único límite para nuestra realización de mañana serán nuestras dudas de hoy.", author: "Franklin D. Roosevelt", cat: "exito" },
+            { text: "La felicidad no es algo que pospones para el futuro; es algo que diseñas para el presente.", author: "Jim Rohn", cat: "enfoque" },
+            { text: "Sé el cambio que deseas ver en el mundo.", author: "Mahatma Gandhi", cat: "liderazgo" },
+            { text: "La actitud lo es todo. Cambia tu actitud y cambiarás tu vida.", author: "Anónimo", cat: "exito" },
+            { text: "El entusiasmo es la fuerza que impulsa tu mente.", author: "Anónimo", cat: "enfoque" },
+            { text: "Incluso la noche más oscura terminará y el sol saldrá.", author: "Víctor Hugo", cat: "exito" },
+            { text: "El éxito es estar a gusto con uno mismo, con lo que hace y con cómo lo hace.", author: "Maya Angelou", cat: "exito" },
+            { text: "No podemos dirigir el viento, pero podemos ajustar las velas.", author: "Thomas S. Monson", cat: "liderazgo" },
+            { text: "Rodéate de personas que desafíen tus límites, no de personas que limiten tus desafíos.", author: "Anónimo", cat: "liderazgo" },
+            { text: "La perseverancia no es una carrera larga; son muchas carreras cortas una tras otra.", author: "Walter Elliot", cat: "enfoque" },
+            { text: "Tu actitud, no tu aptitud, determinará tu altitud.", author: "Zig Ziglar", cat: "exito" },
+            { text: "La inteligencia sin ambición es un pájaro sin alas.", author: "Salvador Dalí", cat: "exito" },
+            { text: "El destino no es cuestión de suerte, es cuestión de elección.", author: "William Jennings Bryan", cat: "liderazgo" },
+            { text: "Siempre parece imposible hasta que se hace.", author: "Nelson Mandela", cat: "exito" },
+            { text: "Nunca eres demasiado viejo para fijarte otra meta o para soñar un nuevo sueño.", author: "C.S. Lewis", cat: "exito" },
+            { text: "Si puedes soñarlo, puedes hacerlo.", author: "Walt Disney", cat: "exito" },
+            { text: "El fracaso es simplemente la oportunidad de comenzar de nuevo de manera más inteligente.", author: "Henry Ford", cat: "exito" },
+            { text: "Mantén tu rostro hacia la luz del sol y no verás la sombra.", author: "Helen Keller", cat: "enfoque" },
+            { text: "Si no escalas la montaña, jamás podrás disfrutar del paisaje.", author: "Pablo Neruda", cat: "exito" },
+            { text: "El verdadero progreso es el que pone la tecnología al servicio de la humanidad.", author: "Anónimo", cat: "enfoque" },
+            { text: "La confianza en uno mismo es el primer secreto del éxito.", author: "Ralph Waldo Emerson", cat: "exito" },
+            { text: "La paciencia y perseverancia tienen un efecto mágico ante el cual las dificultades desaparecen.", author: "John Quincy Adams", cat: "enfoque" },
+            { text: "El secreto de salir adelante es comenzar.", author: "Mark Twain", cat: "enfoque" },
+            { text: "Para lograr grandes cosas, no solo debemos actuar, sino también soñar.", author: "Anatole France", cat: "exito" }
+        ];
+
+        let currentCategory = 'all';
+
+        // Muestra una frase aleatoria basada en la categoría seleccionada
+        function getNewQuote() {
+            const textEl = document.getElementById('quoteText');
+            const authorEl = document.getElementById('quoteAuthor');
+            const categoryEl = document.getElementById('quoteCategory');
+
+            // Efecto de desvanecimiento (fade-out)
+            textEl.classList.add('fade-out');
+            authorEl.classList.add('fade-out');
+
+            setTimeout(() => {
+                // Filtrar frases
+                const filteredQuotes = currentCategory === 'all' 
+                    ? quotes 
+                    : quotes.filter(q => q.cat === currentCategory);
+
+                // Elegir una aleatoria
+                const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+                const selected = filteredQuotes[randomIndex];
+
+                // Actualizar textos
+                textEl.innerText = `"${selected.text}"`;
+                authorEl.innerText = `- ${selected.author}`;
+                
+                // Formatear tag de categoría
+                let catName = "General";
+                if (selected.cat === 'liderazgo') catName = "Liderazgo";
+                if (selected.cat === 'exito') catName = "Éxito y Visión";
+                if (selected.cat === 'enfoque') catName = "Productividad";
+                categoryEl.innerText = catName;
+
+                // Quitar efecto de desvanecimiento (fade-in)
+                textEl.classList.remove('fade-out');
+                authorEl.classList.remove('fade-out');
+            }, 400);
+        }
+
+        // Cambiar la categoría activa
+        function setCategory(cat) {
+            currentCategory = cat;
+            
+            // Actualizar clases de los botones
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Buscar cuál botón activar
+            event.target.classList.add('active');
+            
+            // Traer nueva frase de esa categoría inmediatamente
+            getNewQuote();
+        }
+
+        // Cargar frase inicial cuando cargue la página
+        window.onload = getNewQuote;
+    </script>
+</body>
+</html>
